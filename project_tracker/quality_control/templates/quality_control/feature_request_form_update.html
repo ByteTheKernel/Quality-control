@@ -1,0 +1,49 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<h2>Изменить запрос на улучшение: {{ feature_request.title }}</h2>
+<form method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Сохранить</button>
+</form>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+  $(document).ready(function() {
+    // Функция для обновления списка задач
+    function updateTasks(projectId, selectedTaskId) {
+        $.ajax({
+            url: '/quality_control/ajax/get-tasks-for-project/' + projectId + '/',
+            dataType: 'json',
+            success: function (tasks) {
+                var taskSelect = $("#id_task");
+                taskSelect.empty();
+                taskSelect.append($('<option>').val('').text('---------'));
+                $.each(tasks, function(index, task) {
+                    var option = $('<option>').val(task.id).text(task.name);
+                    // Устанавливаем выбранное значение, если оно совпадает с задачей
+                    if (task.id === selectedTaskId) {
+                        option.attr('selected', 'selected');
+                    }
+                    taskSelect.append(option);
+                });
+            }
+        });
+    }
+
+    // Обработчик изменения проекта
+    $('#id_project').change(function() {
+        var projectId = $(this).val();
+        updateTasks(projectId);
+    });
+
+    // Вызов функции обновления при загрузке страницы, если проект уже выбран
+    var selectedProjectId = $('#id_project').val();
+    var selectedTaskId = {{ feature_request.task.id }};
+    if(selectedProjectId) {
+        updateTasks(selectedProjectId, selectedTaskId);
+    }
+});
+</script>
+
+{% endblock %}

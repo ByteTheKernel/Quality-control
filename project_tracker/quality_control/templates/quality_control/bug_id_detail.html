@@ -1,6 +1,11 @@
 {% extends 'base/base.html' %}
 
 {% block content %}
+        <!--Ссылка для изменения баг репорта -->
+    <p><a href="{% url 'quality_control:update_bug_report' bugreport.id %}">Изменить баг репорт</a></p>
+        <!-- Ссылка удаления баг репорта -->
+    <!-- <p><a href="{% url 'quality_control:delete_bug_report' bugreport.id %}" onclick="return confirm('Вы уверены, что хотите удалить этот баг репорт?');">Удалить баг репорт</a></p> -->
+    <p><a href="{% url 'quality_control:delete_bug_report' bugreport.id %}">Удалить баг репорт</a></p>
     <h1>{{ bugreport.title }}</h1>
     <p><strong>Описание:</strong> {{ bugreport.description }} </p>
     <p><strong>Статус:</strong> {{ bugreport.get_status_display }}</p>
